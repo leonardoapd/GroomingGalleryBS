@@ -6,15 +6,15 @@ using Newtonsoft.Json;
 
 namespace GroomingGalleryBs.DTOs
 {
-    public class EmployeeDTO
+    public record EmployeeDTO
     {
-        public Guid Id { get; set; }
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; } 
-        public string? PhoneNumber { get; set; } 
-        public string? Email { get; set; } 
+        public Guid Id { get; init; }
+        public string? FirstName { get; init; }
+        public string? LastName { get; init; } 
+        public string? PhoneNumber { get; init; } 
+        public string? Email { get; init; } 
 
         [JsonIgnore]
-        public ICollection<ServiceDTO>? EmployeeServices { get; set; }
+        public ICollection<ServiceDTO>? EmployeeServices { get; init; }
     }
 }

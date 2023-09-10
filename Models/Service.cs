@@ -7,20 +7,19 @@ using System.Threading.Tasks;
 
 namespace GroomingGalleryBs.Models
 {
-    public class Service
+    public record Service
     {
-        public Guid Id { get; set; }
-        [Required]
-        public string Name { get; set; } = null!;
-        [Required]
-        public string Description { get; set; } = null!;
-        [Required]
-        public double Price { get; set; } 
-        [Required]
-        public int DurationInMinutes { get; set; }
+        public Guid Id { get; init; }
+        public string Name { get; init; } = null!;
+        public string Description { get; init; } = null!;
+        public decimal Price { get; init; } 
+        
+        public int DurationInMinutes { get; init; }
+
+        // Navigation properties
         [JsonIgnore]
-        public ICollection<EmployeeService>? EmployeeServices { get; set; }
+        public ICollection<EmployeeService>? EmployeeServices { get; init; }
         [JsonIgnore]
-        public ICollection<Appointment>? Appointments { get; set; }
+        public ICollection<Appointment>? Appointments { get; init; }
     }
 }

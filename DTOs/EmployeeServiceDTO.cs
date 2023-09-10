@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GroomingGalleryBs.DTOs
 {
-    public class EmployeeServiceDTO
+    public record EmployeeServiceDTO
     {
         public Guid EmployeeId { get; set; }
         public Guid ServiceId { get; set; }

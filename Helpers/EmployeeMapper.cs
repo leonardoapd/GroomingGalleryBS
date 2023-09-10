@@ -20,7 +20,7 @@ namespace GroomingGalleryBs.Helpers
                 PhoneNumber = employee.PhoneNumber,
                 EmployeeServices = employee.EmployeeServices?.Select(es => new ServiceDTO
                 {
-                    Id = es.Service.Id,
+                    Id = es.Service!.Id,
                     Name = es.Service.Name,
                     Description = es.Service.Description,
                     Price = es.Service.Price,

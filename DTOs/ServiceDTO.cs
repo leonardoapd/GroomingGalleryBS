@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace GroomingGalleryBs.DTOs
 {
-    public class ServiceDTO
+    public record ServiceDTO
     {
-        public Guid Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public double Price { get; set; }
-        public int DurationInMinutes { get; set; }
+        public Guid Id { get; init; }
+        public string? Name { get; init; }
+        public string? Description { get; init; }
+        public decimal Price { get; init; }
+        public int DurationInMinutes { get; init; }
     }
 }

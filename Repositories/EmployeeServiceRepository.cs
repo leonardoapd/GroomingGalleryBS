@@ -53,7 +53,7 @@ namespace GroomingGalleryBs.Repositories
                     Select(es => es.Service).
                     ToList();
 
-                return Task.FromResult(services.AsEnumerable());
+                return Task.FromResult<IEnumerable<Service>>(services!);
             }
             catch (Exception ex)
             {

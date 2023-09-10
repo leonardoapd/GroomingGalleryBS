@@ -24,7 +24,7 @@ namespace GroomingGalleryBs.Helpers
                     Email = appointment.Employee!.Email,
                     EmployeeServices = appointment.Employee!.EmployeeServices?.Select(es => new ServiceDTO
                     {
-                        Id = es.Service.Id,
+                        Id = es.Service!.Id,
                         Name = es.Service.Name,
                         Description = es.Service.Description,
                         Price = es.Service.Price,

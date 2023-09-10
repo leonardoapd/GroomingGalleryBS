@@ -6,19 +6,22 @@ using System.Threading.Tasks;
 
 namespace GroomingGalleryBs.Models
 {
-    public class Appointment
+    public record Appointment
     {
-        public Guid Id { get; set; }
-        public DateTime AppointmentDate { get; set; }
-        public Guid EmployeeId { get; set; }
+        public Guid Id { get; init; }
+        public DateTimeOffset AppointmentDate { get; init; }
+
+        // Navigation properties
+        public Guid EmployeeId { get; init; }
+        public Guid ServiceId { get; init; }
+        public Guid CustomerId { get; init; }
+        
         [JsonIgnore]
-        public Employee? Employee { get; set; }
-        public Guid ServiceId { get; set; }
+        public Service? Service { get; init; }
         [JsonIgnore]
-        public Service? Service { get; set; }
-        public Guid CustomerId { get; set; }
+        public Customer? Customer { get; init; }
         [JsonIgnore]
-        public Customer? Customer { get; set; }
+        public Employee? Employee { get; init; }
 
     }
 }
