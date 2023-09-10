@@ -57,6 +57,8 @@ namespace GroomingGalleryBs.Repositories
             {
                 var Appointments = _context.Appointments
                     .Include(a => a.Employee)
+                    .ThenInclude(e => e!.EmployeeServices!)
+                    .ThenInclude(es => es.Service)
                     .Include(a => a.Service)
                     .Include(a => a.Customer)
                     .ToList() ?? new List<Appointment>();
@@ -76,6 +78,8 @@ namespace GroomingGalleryBs.Repositories
             {
                 var Appointment = await _context.Appointments
                     .Include(a => a.Employee)
+                    .ThenInclude(e => e!.EmployeeServices!)
+                    .ThenInclude(es => es.Service)
                     .Include(a => a.Service)
                     .Include(a => a.Customer)
                     .FirstOrDefaultAsync(c => c.Id == id) ?? new Appointment();

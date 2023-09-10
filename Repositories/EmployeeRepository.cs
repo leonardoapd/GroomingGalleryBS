@@ -55,7 +55,10 @@ namespace GroomingGalleryBs.Repositories
         {
             try
             {
-                var employees = _context.Employees.ToList();
+                var employees = _context.Employees
+                    .Include(e => e.EmployeeServices!)
+                    .ThenInclude(es => es.Service)
+                    .ToList();
                 return Task.FromResult(employees.AsEnumerable());
             }
             catch (Exception ex)
@@ -68,8 +71,12 @@ namespace GroomingGalleryBs.Repositories
         {
             try
             {
-                var employee = _context.Employees.FirstOrDefault(e => e.Id == id);
-                return Task.FromResult(employee!);
+                var employee = _context.Employees
+                    .Include(e => e.EmployeeServices!)
+                    .ThenInclude(es => es.Service)
+                    .FirstOrDefault(e => e.Id == id) ?? new Employee();
+
+                return Task.FromResult(employee);
             }
             catch (Exception ex)
             {

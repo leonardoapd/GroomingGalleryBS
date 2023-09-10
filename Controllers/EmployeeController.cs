@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GroomingGalleryBs.DTOs;
+using GroomingGalleryBs.Helpers;
 using GroomingGalleryBs.Models;
 using GroomingGalleryBs.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace GroomingGalleryBs.Controllers
             _employeeRepository = employeeRepository;
         }
 
-        [ProducesResponseType(typeof(IEnumerable<Employee>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<EmployeeDTO>), 200)]
         [ProducesResponseType(400)]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployees()
@@ -28,15 +29,8 @@ namespace GroomingGalleryBs.Controllers
             try
             {
                 var employees = await _employeeRepository.GetAll();
-                
-                var employeeDtos = employees.Select(employee => new EmployeeDTO
-                {
-                    Id = employee.Id,
-                    FirstName = employee.FirstName,
-                    LastName = employee.LastName,
-                    Email = employee.Email,
-                    PhoneNumber = employee.PhoneNumber
-                });
+
+                var employeeDtos = employees.Select(employee => EmployeeMapper.MapToDTO(employee)).ToList();
 
                 return Ok(employeeDtos);
             }
@@ -46,7 +40,7 @@ namespace GroomingGalleryBs.Controllers
             }
         }
 
-        [ProducesResponseType(typeof(Employee), 200)]
+        [ProducesResponseType(typeof(EmployeeDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [HttpGet("{id}")]
@@ -57,13 +51,7 @@ namespace GroomingGalleryBs.Controllers
                 var employee = await _employeeRepository.GetById(id);
                 if (employee != null)
                 {
-                    var employeeDto = new EmployeeDTO
-                    {
-                        FirstName = employee.FirstName,
-                        LastName = employee.LastName,
-                        Email = employee.Email,
-                        PhoneNumber = employee.PhoneNumber
-                    };
+                    var employeeDto = EmployeeMapper.MapToDTO(employee);
                     return Ok(employeeDto);
                 }
                 return NotFound();

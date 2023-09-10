@@ -20,6 +20,7 @@ builder.Services.AddScoped<IRepository<Employee>, EmployeeRepository>();
 builder.Services.AddScoped<IRepository<Customer>, CustomerRepository>();
 builder.Services.AddScoped<IRepository<Appointment>, AppointmentRepository>();
 builder.Services.AddScoped<IRepository<Service>, ServiceRepository>();
+builder.Services.AddScoped<IEmployeeServiceRepository, EmployeeServiceRepository>();
 
 var app = builder.Build();
 
