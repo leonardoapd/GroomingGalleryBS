@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using GroomingGalleryBs.Data;
 using GroomingGalleryBs.DTOs;
+using GroomingGalleryBs.DTOs.CustomerDTOs;
+using GroomingGalleryBs.Helpers;
 using GroomingGalleryBs.Models;
 using GroomingGalleryBs.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +34,8 @@ namespace GroomingGalleryBs.Controllers
         {
             try
             {
-                var customers = await _customerRepository.GetAll();
+                var customers = (await _customerRepository.GetAll())
+                                .Select(customer => customer.AsDTO());
                 if (customers != null)
                 {
                     return Ok(customers);
@@ -45,7 +48,7 @@ namespace GroomingGalleryBs.Controllers
             }
         }
 
-        [ProducesResponseType(typeof(Customer), 200)]
+        [ProducesResponseType(typeof(CustomerDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [HttpGet("{id}")]
@@ -53,18 +56,10 @@ namespace GroomingGalleryBs.Controllers
         {
             try
             {
-                var customer = await _customerRepository.GetById(id);
+                Customer customer = await _customerRepository.GetById(id);
                 if (customer != null)
                 {
-                    var customerDto = new CustomerDTO
-                    {
-                        Id = customer.Id,
-                        FirstName = customer.FirstName,
-                        LastName = customer.LastName,
-                        PhoneNumber = customer.PhoneNumber,
-                        Email = customer.Email
-                    };
-                    return Ok(customerDto);
+                    return Ok(customer.AsDTO());
                 }
                 return NotFound();
             }
@@ -77,12 +72,20 @@ namespace GroomingGalleryBs.Controllers
         [ProducesResponseType(typeof(Customer), 201)]
         [ProducesResponseType(400)]
         [HttpPost]
-        public async Task<ActionResult<Customer>> AddCustomer(Customer customer)
+        public async Task<ActionResult<CustomerDTO>> CreateCustomer(CreateCustomerDTO customerDTO)
         {
+            Customer customer = new ()
+            {
+                FirstName = customerDTO.FirstName,
+                LastName = customerDTO.LastName,
+                PhoneNumber = customerDTO.PhoneNumber,
+                Email = customerDTO.Email
+            };
+
             try
             {
                 await _customerRepository.Create(customer);
-                return CreatedAtAction(nameof(GetCustomer), new { id = customer.Id }, customer);
+                return CreatedAtAction(nameof(GetCustomer), new { id = customer.Id }, customerDTO);
             }
             catch (Exception ex)
             {
@@ -94,21 +97,21 @@ namespace GroomingGalleryBs.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateCustomer(Guid id, [FromBody] CustomerDTO customerDTO) // [FromBody] Customer customer
+        public async Task<ActionResult> UpdateCustomer(Guid id, [FromBody] UpdateCustomerDTO customerDTO) // [FromBody] Customer customer
         {
             try
             {
-                var customer = await _customerRepository.GetById(id);
-                if (customer != null)
+                var existingCustomer = await _customerRepository.GetById(id);
+                if (existingCustomer != null)
                 {
-                    var updatedCustomer = new Customer
+                    Customer updatedCustomer = existingCustomer with
                     {
-                        Id = customer.Id,
-                        FirstName = customerDTO.FirstName ?? customer.FirstName,
-                        LastName = customerDTO.LastName ?? customer.LastName,
-                        PhoneNumber = customerDTO.PhoneNumber ?? customer.PhoneNumber,
-                        Email = customerDTO.Email ?? customer.Email
+                        FirstName = customerDTO.FirstName,
+                        LastName = customerDTO.LastName,
+                        PhoneNumber = customerDTO.PhoneNumber,
+                        Email = customerDTO.Email
                     };
+                    
                     await _customerRepository.Update(updatedCustomer);
                     return NoContent();
                 }

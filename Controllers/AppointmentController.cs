@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GroomingGalleryBs.DTOs;
+using GroomingGalleryBs.DTOs.AppointmentDTOs;
 using GroomingGalleryBs.Helpers;
 using GroomingGalleryBs.Models;
 using GroomingGalleryBs.Repositories;
@@ -15,10 +16,12 @@ namespace GroomingGalleryBs.Controllers
     public class AppointmentController : ControllerBase
     {
         private readonly IRepository<Appointment> _appointmentRepository;
+        private readonly IEmployeeServiceRepository _employeeServiceRepository;
 
-        public AppointmentController(IRepository<Appointment> appointmentRepository)
+        public AppointmentController(IRepository<Appointment> appointmentRepository, IEmployeeServiceRepository employeeServiceRepository)
         {
             _appointmentRepository = appointmentRepository;
+            _employeeServiceRepository = employeeServiceRepository;
         }
 
         [ProducesResponseType(typeof(IEnumerable<AppointmentDTO>), 200)]
@@ -29,12 +32,12 @@ namespace GroomingGalleryBs.Controllers
             try
             {
                 var appointments = await _appointmentRepository.GetAll();
-                
+
                 var appointmentDTOs = new List<AppointmentDTO>();
 
                 foreach (var appointment in appointments)
                 {
-                    var appointmentDTO = AppointmentMapper.MapToDTO(appointment);
+                    var appointmentDTO = appointment.AsDTO();
                     appointmentDTOs.Add(appointmentDTO);
                 }
 
@@ -60,7 +63,7 @@ namespace GroomingGalleryBs.Controllers
                     return NotFound();
                 }
 
-                var appointmentDTO = AppointmentMapper.MapToDTO(appointment);            
+                var appointmentDTO = appointment.AsDTO();
                 return Ok(appointmentDTO);
 
             }
@@ -77,6 +80,13 @@ namespace GroomingGalleryBs.Controllers
         {
             try
             {
+                var employeServices = await _employeeServiceRepository.GetEmployeeServices(appointment.EmployeeId);
+                var service = employeServices.FirstOrDefault(s => s.Id == appointment.ServiceId);
+                if (service == null)
+                {
+                    throw new Exception("Employee does not have this service");
+                }
+
                 var newAppointment = await _appointmentRepository.Create(appointment);
                 return Ok(newAppointment);
             }
@@ -85,5 +95,74 @@ namespace GroomingGalleryBs.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [ProducesResponseType(typeof(CustomerAppointmentsDTO), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [HttpGet("Customer/{id}")]
+        public async Task<ActionResult<CustomerAppointmentsDTO>> GetCustomerAppointments(Guid id)
+        {
+            try
+            {
+                var appointments = await _appointmentRepository.GetAll();
+                if (appointments == null || appointments.FirstOrDefault(a => a.CustomerId == id) == null)
+                {
+                    return NotFound();
+                }
+
+                List<CustomerAppointmentsDTO> customerAppointmentsDTOs = new List<CustomerAppointmentsDTO>();
+
+                foreach (var appointment in appointments)
+                {
+                    if (appointment.CustomerId == id)
+                    {
+                        var customerAppointmentsDTO = CustomerAppointmentMapper.AsDTO(appointment);
+                        customerAppointmentsDTOs.Add(customerAppointmentsDTO);
+                    }
+                }
+
+                return Ok(customerAppointmentsDTOs);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [ProducesResponseType(typeof(EmployeeAppointmentsDTO), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [HttpGet("Employee/{id}")]
+        public async Task<ActionResult<EmployeeAppointmentsDTO>> GetEmployeeAppointments(Guid id)
+        {
+            try
+            {
+                var appointments = await _appointmentRepository.GetAll();
+                if (appointments == null || appointments.FirstOrDefault(a => a.EmployeeId == id) == null)
+                {
+                    return NotFound();
+                }
+
+                List<EmployeeAppointmentsDTO> employeeAppointmentsDTOs = new List<EmployeeAppointmentsDTO>();
+
+                foreach (var appointment in appointments)
+                {
+                    if (appointment.EmployeeId == id)
+                    {
+                        var employeeAppointmentsDTO = EmployeeAppointmentMapper.AsDTO(appointment);
+                        employeeAppointmentsDTOs.Add(employeeAppointmentsDTO);
+                    }
+                }
+
+                return Ok(employeeAppointmentsDTOs);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

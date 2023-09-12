@@ -2,17 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GroomingGalleryBs.DTOs.EmployeeDTOs;
 
-namespace GroomingGalleryBs.DTOs
+namespace GroomingGalleryBs.DTOs.AppointmentDTOs
 {
-    public record AppointmentDTO
+    public record EmployeeAppointmentsDTO
     {
         public Guid Id { get; init; }
         public DateTimeOffset AppointmentDate { get; init; }
-        public AppointmentEmployeeDTO Employee { get; init; } = null!;
-        public ServiceDTO Service { get; init; } = null!;
         public CustomerDTO Customer { get; init; } = null!;
-        
+        public ServiceDTO Service { get; init; } = null!;
     }
 }

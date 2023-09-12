@@ -9,7 +9,7 @@ namespace GroomingGalleryBs.Helpers
 {
     public static class ServiceMapper
     {
-        public static ServiceDTO MapToDTO(Service service)
+        public static ServiceDTO AsDTO(this Service service)
         {
             return new ServiceDTO
             {
@@ -21,7 +21,7 @@ namespace GroomingGalleryBs.Helpers
             };
         }
 
-        public static Service MapFromDTO(ServiceDTO serviceDTO)
+        public static Service FromDTO(this ServiceDTO serviceDTO)
         {
             return new Service
             {

@@ -3,33 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GroomingGalleryBs.DTOs;
+using GroomingGalleryBs.DTOs.EmployeeDTOs;
 using GroomingGalleryBs.Models;
 
 namespace GroomingGalleryBs.Helpers
 {
     public static class AppointmentMapper
     {
-        public static AppointmentDTO MapToDTO(Appointment appointment)
+        public static AppointmentDTO AsDTO(this Appointment appointment)
         {
             return new AppointmentDTO
             {
                 Id = appointment.Id,
                 AppointmentDate = appointment.AppointmentDate,
-                Employee = new EmployeeDTO
+                Employee = new AppointmentEmployeeDTO
                 {
                     Id = appointment.Employee!.Id,
                     FirstName = appointment.Employee!.FirstName,
                     LastName = appointment.Employee!.LastName,
                     PhoneNumber = appointment.Employee!.PhoneNumber,
                     Email = appointment.Employee!.Email,
-                    EmployeeServices = appointment.Employee!.EmployeeServices?.Select(es => new ServiceDTO
-                    {
-                        Id = es.Service!.Id,
-                        Name = es.Service.Name,
-                        Description = es.Service.Description,
-                        Price = es.Service.Price,
-                        DurationInMinutes = es.Service.DurationInMinutes
-                    }).ToList()
                 },
                 Customer = new CustomerDTO
                 {
