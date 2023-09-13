@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 
 namespace GroomingGalleryBs.Models
 {
-    public class EmployeeService
+    public record EmployeeService
     {
         public Guid EmployeeId { get; set; }
         public Guid ServiceId { get; set; }
-        public Employee Employee { get; set; } = null!;
-        public Service Service { get; set; } = null!;
+
+        // Navigation properties
+        public Employee? Employee { get; set; }
+        public Service? Service { get; set; }
     }
 }

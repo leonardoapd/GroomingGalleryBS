@@ -1,3 +1,3 @@
 ﻿<Project>
-  <Import Project="..\buildMultiTargeting\GroomingGalleryBS.props" />
+  <Import Project="../buildMultiTargeting/GroomingGalleryBS.props" />
 </Project>

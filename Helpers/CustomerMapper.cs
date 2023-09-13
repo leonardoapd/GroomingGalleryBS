@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GroomingGalleryBs.DTOs;
+using GroomingGalleryBs.DTOs.CustomerDTOs;
 using GroomingGalleryBs.Models;
 
 namespace GroomingGalleryBs.Helpers
 {
     public static class CustomerMapper
     {
-        public static CustomerDTO MapToDTO(Customer customer)
+        public static CustomerDTO AsDTO(this Customer customer)
         {
             return new CustomerDTO
             {
@@ -21,7 +22,7 @@ namespace GroomingGalleryBs.Helpers
             };
         }
 
-        public static Customer MapFromDTO(CustomerDTO customerDTO)
+        public static Customer FromDTO(this CustomerDTO customerDTO)
         {
             return new Customer
             {

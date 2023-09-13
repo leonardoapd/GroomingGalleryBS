@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GroomingGalleryBs.DTOs;
+using GroomingGalleryBs.DTOs.EmployeeDTOs;
 using GroomingGalleryBs.Helpers;
 using GroomingGalleryBs.Models;
 using GroomingGalleryBs.Repositories;
@@ -28,11 +29,14 @@ namespace GroomingGalleryBs.Controllers
         {
             try
             {
-                var employees = await _employeeRepository.GetAll();
+                var employees = (await _employeeRepository.GetAll())
+                                .Select(employee => employee.AsDTO());
 
-                var employeeDtos = employees.Select(employee => EmployeeMapper.MapToDTO(employee)).ToList();
-
-                return Ok(employeeDtos);
+                if (employees != null)  
+                {
+                    return Ok(employees);
+                }
+                return NotFound();
             }
             catch (Exception ex)
             {
@@ -51,8 +55,7 @@ namespace GroomingGalleryBs.Controllers
                 var employee = await _employeeRepository.GetById(id);
                 if (employee != null)
                 {
-                    var employeeDto = EmployeeMapper.MapToDTO(employee);
-                    return Ok(employeeDto);
+                    return Ok(employee.AsDTO());
                 }
                 return NotFound();
             }
@@ -65,12 +68,20 @@ namespace GroomingGalleryBs.Controllers
         [ProducesResponseType(typeof(Employee), 201)]
         [ProducesResponseType(400)]
         [HttpPost]
-        public async Task<ActionResult<Employee>> AddEmployee(Employee employee)
+        public async Task<ActionResult<Employee>> CreateEmployee(CreateEmployeeDTO employeeDTO)
         {
+            Employee employee = new ()
+            {
+                FirstName = employeeDTO.FirstName,
+                LastName = employeeDTO.LastName,
+                Email = employeeDTO.Email,
+                PhoneNumber = employeeDTO.PhoneNumber
+            };
+
             try
             {
                 await _employeeRepository.Create(employee);
-                return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
+                return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employeeDTO);
             }
             catch (Exception ex)
             {
@@ -82,20 +93,19 @@ namespace GroomingGalleryBs.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [HttpPatch("{id}")]
-        public async Task<ActionResult> UpdateEmployee(Guid id, [FromBody] EmployeeDTO employeeDto)
+        public async Task<ActionResult> UpdateEmployee(Guid id, [FromBody] UpdateEmployeeDTO employeeDto)
         {
             try
             {
-                var employee = await _employeeRepository.GetById(id);
-                if (employee != null)
+                var existingEmployee = await _employeeRepository.GetById(id);
+                if (existingEmployee != null)
                 {
-                    var updatedEmployee = new Employee
+                    Employee updatedEmployee = existingEmployee with
                     {
-                        Id = employee.Id,
-                        FirstName = employeeDto.FirstName ?? employee.FirstName,
-                        LastName = employeeDto.LastName ?? employee.LastName,
-                        Email = employeeDto.Email ?? employee.Email,
-                        PhoneNumber = employeeDto.PhoneNumber ?? employee.PhoneNumber
+                        FirstName = employeeDto.FirstName,
+                        LastName = employeeDto.LastName,
+                        Email = employeeDto.Email,
+                        PhoneNumber = employeeDto.PhoneNumber
                     };
 
                     await _employeeRepository.Update(updatedEmployee);

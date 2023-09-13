@@ -6,6 +6,8 @@ using GroomingGalleryBs.Models;
 using GroomingGalleryBs.DTOs;
 using GroomingGalleryBs.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using GroomingGalleryBs.Helpers;
+using GroomingGalleryBs.DTOs.ServiceDTOs;
 
 namespace GroomingGalleryBs.Controllers
 {
@@ -27,8 +29,14 @@ namespace GroomingGalleryBs.Controllers
         {
             try
             {
-                var services = await _serviceRepository.GetAll();
-                return Ok(services);
+                var services = (await _serviceRepository.GetAll())
+                                .Select(service => service.AsDTO());
+
+                if (services != null)
+                {
+                    return Ok(services);
+                }
+                return NotFound();
             }
             catch (Exception ex)
             {
@@ -45,11 +53,11 @@ namespace GroomingGalleryBs.Controllers
             try
             {
                 var service = await _serviceRepository.GetById(id);
-                if (service == null)
+                if (service is null)
                 {
                     return NotFound();
                 }
-                return Ok(service);
+                return Ok(service.AsDTO());
             }
             catch (Exception ex)
             {
@@ -60,12 +68,20 @@ namespace GroomingGalleryBs.Controllers
         [ProducesResponseType(typeof(Service), 200)]
         [ProducesResponseType(400)]
         [HttpPost]
-        public async Task<ActionResult<Service>> CreateService(Service service)
+        public async Task<ActionResult<ServiceDTO>> CreateService(CreateServiceDTO serviceDTO)
         {
+            Service service = new()
+            {
+                Name = serviceDTO.Name!,
+                Description = serviceDTO.Description!,
+                Price = serviceDTO.Price,
+                DurationInMinutes = serviceDTO.DurationInMinutes
+            };
+
             try
             {
                 await _serviceRepository.Create(service);
-                return Ok(service);
+                return CreatedAtAction(nameof(GetService), new { id = service.Id }, service);
             }
             catch (Exception ex)
             {
@@ -77,7 +93,7 @@ namespace GroomingGalleryBs.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [HttpPatch("{id}")]
-        public async Task<ActionResult> UpdateService(Guid id, [FromBody] ServiceDTO serviceDTO)
+        public async Task<ActionResult> UpdateService(Guid id, [FromBody] UpdateServiceDTO serviceDTO)
         {
             try
             {
@@ -87,11 +103,10 @@ namespace GroomingGalleryBs.Controllers
                     return NotFound();
                 }
 
-                var updatedService = new Service
+                Service updatedService = service with
                 {
-                    Id = service.Id,
-                    Name = serviceDTO.Name ?? service.Name,
-                    Description = serviceDTO.Description ?? service.Description,
+                    Name = serviceDTO.Name!,
+                    Description = serviceDTO.Description!,
                     Price = serviceDTO.Price,
                     DurationInMinutes = serviceDTO.DurationInMinutes
                 };
@@ -118,7 +133,6 @@ namespace GroomingGalleryBs.Controllers
                 {
                     return NoContent();
                 }
-
                 return NotFound();
             }
             catch (Exception ex)

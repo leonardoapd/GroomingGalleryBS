@@ -9,7 +9,7 @@ namespace GroomingGalleryBs.Helpers
 {
     public static class EmployeeMapper 
     {
-        public static EmployeeDTO MapToDTO(Employee employee)
+        public static EmployeeDTO AsDTO(this Employee employee)
         {
             return new EmployeeDTO
             {
@@ -20,7 +20,7 @@ namespace GroomingGalleryBs.Helpers
                 PhoneNumber = employee.PhoneNumber,
                 EmployeeServices = employee.EmployeeServices?.Select(es => new ServiceDTO
                 {
-                    Id = es.Service.Id,
+                    Id = es.Service!.Id,
                     Name = es.Service.Name,
                     Description = es.Service.Description,
                     Price = es.Service.Price,
@@ -29,69 +29,16 @@ namespace GroomingGalleryBs.Helpers
             };
         }
 
-
-        // public static EmployeeDTO MapToDTO(Employee employee)
-        // {
-        //     return new EmployeeDTO
-        //     {
-        //         Id = employee.Id,
-        //         FirstName = employee.FirstName,
-        //         LastName = employee.LastName,
-        //         Email = employee.Email,
-        //         PhoneNumber = employee.PhoneNumber,
-        //         EmployeeServices = employee.EmployeeServices?.Select(es => MapToServiceDTO(es.Service)).ToList()
-        //     };
-        // }
-
-        // public static Employee MapFromDTO(EmployeeDTO employeeDTO)
-        // {
-        //     return new Employee
-        //     {
-        //         Id = employeeDTO.Id,
-        //         FirstName = employeeDTO.FirstName,
-        //         LastName = employeeDTO.LastName,
-        //         Email = employeeDTO.Email,
-        //         PhoneNumber = employeeDTO.PhoneNumber,
-        //         EmployeeServices = employeeDTO.EmployeeServices?.Select(es => new EmployeeService
-        //         {
-        //             Service = MapFromServiceDTO(es)
-        //         }).ToList()
-        //     };
-        // }
-
-        // private static ServiceDTO MapToServiceDTO(Service service)
-        // {
-        //     return new ServiceDTO
-        //     {
-        //         Id = service.Id,
-        //         Name = service.Name,
-        //         Description = service.Description,
-        //         Price = service.Price,
-        //         DurationInMinutes = service.DurationInMinutes
-        //     };
-        // }
-
-        // private static Service MapFromServiceDTO(ServiceDTO serviceDTO)
-        // {
-        //     return new Service
-        //     {
-        //         Id = serviceDTO.Id,
-        //         Name = serviceDTO.Name!,
-        //         Description = serviceDTO.Description!,
-        //         Price = serviceDTO.Price,
-        //         DurationInMinutes = serviceDTO.DurationInMinutes
-        //     };
-        // }
-        public static Employee MapFromDTO(EmployeeDTO dto)
+        public static Employee FromDTO(this EmployeeDTO employeeDTO)
         {
             return new Employee
             {
-                Id = dto.Id,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Email = dto.Email,
-                PhoneNumber = dto.PhoneNumber,
-                EmployeeServices = dto.EmployeeServices?.Select(es => new EmployeeService
+                Id = employeeDTO.Id,
+                FirstName = employeeDTO.FirstName,
+                LastName = employeeDTO.LastName,
+                Email = employeeDTO.Email,
+                PhoneNumber = employeeDTO.PhoneNumber,
+                EmployeeServices = employeeDTO.EmployeeServices?.Select(es => new EmployeeService
                 {
                     Service = new Service
                     {
