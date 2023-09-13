@@ -1,27 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Development\\DevChallenges2023\\GroomingGalleryBs\\GroomingGalleryBS.csproj": {}
+    "/Users/leonardoperdomo/Documents/Leonardo/DotNetProjects/GroomingGalleryBS/GroomingGalleryBS.csproj": {}
   },
   "projects": {
-    "C:\\Development\\DevChallenges2023\\GroomingGalleryBs\\GroomingGalleryBS.csproj": {
+    "/Users/leonardoperdomo/Documents/Leonardo/DotNetProjects/GroomingGalleryBS/GroomingGalleryBS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Development\\DevChallenges2023\\GroomingGalleryBs\\GroomingGalleryBS.csproj",
+        "projectUniqueName": "/Users/leonardoperdomo/Documents/Leonardo/DotNetProjects/GroomingGalleryBS/GroomingGalleryBS.csproj",
         "projectName": "GroomingGalleryBS",
-        "projectPath": "C:\\Development\\DevChallenges2023\\GroomingGalleryBs\\GroomingGalleryBS.csproj",
-        "packagesPath": "C:\\Users\\Leonardo\\.nuget\\packages\\",
-        "outputPath": "C:\\Development\\DevChallenges2023\\GroomingGalleryBs\\obj\\",
+        "projectPath": "/Users/leonardoperdomo/Documents/Leonardo/DotNetProjects/GroomingGalleryBS/GroomingGalleryBS.csproj",
+        "packagesPath": "/Users/leonardoperdomo/.nuget/packages/",
+        "outputPath": "/Users/leonardoperdomo/Documents/Leonardo/DotNetProjects/GroomingGalleryBS/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Leonardo\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/leonardoperdomo/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "/usr/local/share/dotnet/sdk/7.0.304/Sdks/Microsoft.NET.Sdk.Web/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -46,17 +45,17 @@
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[7.0.10, )"
+              "version": "[7.0.11, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[7.0.10, )"
+              "version": "[7.0.11, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[7.0.10, )"
+              "version": "[7.0.11, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -86,7 +85,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.304/RuntimeIdentifierGraph.json"
         }
       }
     }

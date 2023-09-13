@@ -7,6 +7,7 @@ using GroomingGalleryBs.DTOs.AppointmentDTOs;
 using GroomingGalleryBs.Helpers;
 using GroomingGalleryBs.Models;
 using GroomingGalleryBs.Repositories;
+using GroomingGalleryBS.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GroomingGalleryBs.Controllers
@@ -16,12 +17,14 @@ namespace GroomingGalleryBs.Controllers
     public class AppointmentController : ControllerBase
     {
         private readonly IRepository<Appointment> _appointmentRepository;
-        private readonly IEmployeeServiceRepository _employeeServiceRepository;
+        private readonly AppointmentValidator _appointmentValidator;
 
-        public AppointmentController(IRepository<Appointment> appointmentRepository, IEmployeeServiceRepository employeeServiceRepository)
+        public AppointmentController(
+            IRepository<Appointment> appointmentRepository,
+            AppointmentValidator appointmentValidator)
         {
             _appointmentRepository = appointmentRepository;
-            _employeeServiceRepository = employeeServiceRepository;
+            _appointmentValidator = appointmentValidator;
         }
 
         [ProducesResponseType(typeof(IEnumerable<AppointmentDTO>), 200)]
@@ -80,12 +83,7 @@ namespace GroomingGalleryBs.Controllers
         {
             try
             {
-                var employeServices = await _employeeServiceRepository.GetEmployeeServices(appointment.EmployeeId);
-                var service = employeServices.FirstOrDefault(s => s.Id == appointment.ServiceId);
-                if (service == null)
-                {
-                    throw new Exception("Employee does not have this service");
-                }
+                _appointmentValidator.IsAppointmentDataValid(appointment);
 
                 var newAppointment = await _appointmentRepository.Create(appointment);
                 return Ok(newAppointment);
